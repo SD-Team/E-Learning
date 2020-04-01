@@ -1,0 +1,18 @@
+<ul class="page-breadcrumb mb-3">
+  <li class="dropdown show" dropdown>
+    <i class="icon-user icons text-white"></i> 
+    <a class="dropdown-toggle" dropdownToggle role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{user.grouP_NAME}} - {{user.name}}</a>
+    <div class="dropdown-menu" *dropdownMenu aria-labelledby="dropdownMenuLink">
+      <a class="dropdown-item" (click)="logout()"><strong>Logout</strong></a>
+    </div>
+  </li>
+  <li routerLinkActive="active">
+    <a [routerLink]="['/dashboard']">Home</a>
+  </li>
+  <li routerLinkActive="active" *ngIf="administrator">
+    <a [routerLink]="['/system-management']">System-Management</a>
+  </li>
+  <li routerLinkActive="active" *ngIf="administrator">
+    <a [routerLink]="['/report-management']">Report-Management</a>
+  </li>
+</ul>

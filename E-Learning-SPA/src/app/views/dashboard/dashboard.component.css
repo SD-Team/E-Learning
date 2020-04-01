@@ -1,0 +1,14 @@
+.card {
+    background-color: #6fccf5;
+    cursor: pointer;
+    border: none;
+    color: #000;
+    font-size: 18px;
+    min-height: 21vh;
+}
+
+.card:hover {
+    color: #fff;
+    background-color: #20a8d8;
+    transition: ease-in-out 0.5;
+}

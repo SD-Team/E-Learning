@@ -1,0 +1,167 @@
+<div class="animated fadeIn">
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="card">
+            <div class="card-header">
+                <button type="button" 
+                  class="btn btn-success" 
+                  (click)="primaryModal.show()">
+                  <i class="fa fa-plus"></i> Add
+                </button>
+                <button type="button" 
+                  class="btn btn-danger" 
+                  (click)="deleteRoleSelected()">
+                  <i class="fa fa-trash"></i> Delete
+                </button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-striped table-sm">
+                  <thead class="bg-warning">
+                    <tr>
+                      <th></th>
+                      <th>Factory</th>
+                      <th>Account</th>
+                      <th>Name</th>
+                      <th>Dept</th>
+                      <th>Character</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let systemRole of systemRoles">
+                      <td class="text-center"><input type="checkbox" [(ngModel)]="systemRole.selected" [disabled]="systemRole.account.toLowerCase() === user.account.toLowerCase() ? true : false"></td>
+                      <td>{{systemRole.factory}}</td>
+                      <td>{{systemRole.account}}</td>
+                      <td>{{systemRole.name}}</td>
+                      <td>{{systemRole.dept}}</td>
+                      <td>{{systemRole.character}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="row"> 
+                <div class="col-8"> 
+                  <pagination *ngIf="pageCount > 1" [boundaryLinks]="true" [totalItems]="rowCount" [itemsPerPage]="pageSize"
+                    [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;"
+                    firstText="&laquo;" lastText="&raquo;" [maxSize]="5">
+                  </pagination>
+                </div>
+                <div class="col-4 text-right text-primary" *ngIf="rowCount > 0">
+                  {{(currentPage * pageSize) - pageSize + 1}} - {{currentPage == pageCount ? rowCount : currentPage * pageSize}} of {{rowCount}} items
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/.col-->
+        <div class="col-1"></div>
+      </div>
+      <!--/.row-->
+</div>
+
+<ngx-spinner type="ball-clip-rotate"></ngx-spinner>
+
+<!--modal -->
+<div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add</h4>
+        <button type="button" class="close" (click)="primaryModal.hide();addForm.reset()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form
+          [formGroup]="addForm"
+          (ngSubmit)="add()">
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="select1">Factory</label>
+              <div class="col-md-9">
+                <ng-select2
+                  width="100%" 
+                  [data]="factories"
+                  [placeholder]="'Factory'"
+                  formControlName="factory"></ng-select2>                  
+              </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="text-input">Account</label>
+                <div class="col-md-9">
+                  <input [ngClass]="{'is-invalid': addForm.get('account').errors && addForm.get('account').touched}"
+                    class="form-control" 
+                    placeholder="Account"
+                    formControlName="account"
+                    [(ngModel)]="account"
+                    (blur)="getNameAndDeptByAccount()">
+                  <div class="invalid-feedback"
+                    *ngIf="addForm.get('account').touched && addForm.get('account').hasError('required')">
+                    Account is Not Emty
+                  </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="text-input">Name</label>
+                <div class="col-md-9">
+                  <input [ngClass]="{'is-invalid': addForm.get('name').errors && addForm.get('name').touched}"
+                    class="form-control" 
+                    placeholder="Name"
+                    formControlName="name"
+                    [(ngModel)]="name">
+                  <div class="invalid-feedback"
+                    *ngIf="addForm.get('name').touched && addForm.get('name').hasError('required')">
+                    Name is Not Emty
+                  </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="text-input">Dept</label>
+                <div class="col-md-9">
+                  <input [ngClass]="{'is-invalid': addForm.get('dept').errors && addForm.get('dept').touched}"
+                    class="form-control"
+                    placeholder="Dept"
+                    formControlName="dept"
+                    [(ngModel)]="dept">
+                  <div class="invalid-feedback"
+                    *ngIf="addForm.get('dept').touched && addForm.get('dept').hasError('required')">
+                    Dept Not Emty
+                  </div>
+                </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="select1">Character</label>
+              <div class="col-md-9">
+                <ng-select2
+                  [ngClass]="{'is-invalid': addForm.get('character').errors && addForm.get('character').touched}"
+                  width="100%" 
+                  [data]="characters" 
+                  [placeholder]="'Character'"
+                  formControlName="character"
+                  [(ngModel)]="character"></ng-select2>
+                <div class="invalid-feedback"
+                  *ngIf="addForm.get('character').touched && addForm.get('character').hasError('required')">
+                  Character Not Emty
+                </div>
+              </div>
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button"
+          class="btn btn-secondary"
+          (click)="primaryModal.hide();addForm.reset()">
+          <i class="fa fa-close mr-1"></i>Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="!addForm.valid"
+          (click)="add()">
+          <i class="fa fa-save mr-1"></i>Save
+        </button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+<!-- /.modal-->

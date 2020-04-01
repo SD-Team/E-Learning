@@ -1,0 +1,139 @@
+<div class="animated fadeIn">
+  <div class="row">
+      <div class="col-1"></div>
+      <div class="col-10">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-4">
+                <h4>學習記錄統計</h4>
+                <h4>查詢日期</h4>
+              </div>
+              <div class="col-6">
+                <div class="form-group row">
+                    <div class="form-check form-check-inline col-5" id="inline-radios">
+                      <input class="form-check-input" 
+                        type="radio" 
+                        name="detail-summary" 
+                        id="detail" 
+                        checked
+                        (change)="summaryOrDetail()">
+                      <label class="form-check-label" for="detail">明細表</label>
+                    </div>
+                    <div class="form-check form-check-inline col-5">
+                      <input class="form-check-input" 
+                        type="radio"
+                        name="detail-summary"
+                        id="summary"
+                        (change)="summaryOrDetail()">
+                      <label class="form-check-label" for="summary">彙總表</label>
+                    </div>
+                </div>
+                <div class="row">
+                  <div class="col-5 p-0 mr-2">
+                    <div class="input-group">
+                      <input class="form-control" 
+                        placeholder="Start"
+                        type="text" bsDatepicker 
+                        [bsConfig]="{ isAnimated: true, dateInputFormat: 'DD/MM/YYYY'}"
+                        [(ngModel)]="start">
+                      <span class="input-group-text">
+                        <span class="fa fa-calendar"></span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-5 p-0">
+                    <div class="input-group">
+                      <input class="form-control" 
+                        placeholder="End" type="text" 
+                        bsDatepicker 
+                        [bsConfig]="{ isAnimated: true, dateInputFormat: 'DD/MM/YYYY'}"
+                        [(ngModel)]="end">
+                      <span class="input-group-text">
+                        <span class="fa fa-calendar"></span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-2">
+                <button type="button" 
+                  class="btn btn-primary pull-right"
+                  (click)="search()">
+                  <i class="fa fa-search"></i> Search
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped table-sm text-center" *ngIf="summaryDetail">
+                <thead class="bg-warning">
+                  <tr>
+                    <th>廠區</th>
+                    <th>部門</th>
+                    <th>姓名</th>
+                    <th>工號</th>
+                    <th>主題</th>
+                    <th>登入日期時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let viewRecord of viewRecords">
+                    <td>{{viewRecord.factory}}</td>
+                    <td>{{viewRecord.dept}}</td>
+                    <td>{{viewRecord.name}}</td>
+                    <td>{{viewRecord.work_Id}}</td>
+                    <td>{{viewRecord.subject}}</td>
+                    <td>{{viewRecord.start_time | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped table-sm text-center" *ngIf="!summaryDetail">
+                <thead class="bg-warning">
+                  <tr>
+                    <th>廠區</th>
+                    <th>部門</th>
+                    <th>姓名</th>
+                    <th>工號</th>
+                    <th>主題</th>
+                    <th>登入次數</th>
+                    <!-- <th>Total Time</th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let viewRecordSummary of viewRecordSummarys">
+                    <td>{{viewRecordSummary.factory}}</td>
+                    <td>{{viewRecordSummary.dept}}</td>
+                    <td>{{viewRecordSummary.name}}</td>
+                    <td>{{viewRecordSummary.work_Id}}</td>
+                    <td>{{viewRecordSummary.subject}}</td>
+                    <td>{{viewRecordSummary.totalCount}}</td>
+                    <!-- <td>{{(viewRecordSummary.totalTime/3600) - (( viewRecordSummary.totalTime % 3600 ) / 3600) | number:'2.0-0'}} : {{((viewRecordSummary.totalTime%3600)/60) - (((viewRecordSummary.totalTime%3600)/60) / 60) | number:'2.0-0'}} : {{(viewRecordSummary.totalTime%60) | number:'2.0-0'}}</td> -->
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="row"> 
+              <div class="col-8">
+                <pagination *ngIf="pageCount > 1" [boundaryLinks]="true" [totalItems]="rowCount" [itemsPerPage]="pageSize"
+                  [(ngModel)]="currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;" nextText="&rsaquo;"
+                  firstText="&laquo;" lastText="&raquo;" [maxSize]="5">
+                </pagination>
+              </div>
+              <div class="col-4 text-right text-primary" *ngIf="rowCount > 0">
+                {{(currentPage * pageSize) - pageSize + 1}} - {{currentPage == pageCount ? rowCount : currentPage * pageSize}} of {{rowCount}} items
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--/.col-->
+      <div class="col-1"></div>
+    </div>
+    <!--/.row-->
+</div>
+
+<ngx-spinner type="ball-clip-rotate"></ngx-spinner>

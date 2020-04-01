@@ -1,0 +1,44 @@
+<div class="animated fadeIn mt-5">
+  <div class="row align-self-center">
+    <div class="col-2">
+    </div>
+    <div class="col-8">
+      <div class="row">
+        <div class="col-sm-6 col-lg-3"
+          (click)="saveStartVideo(video)"
+          *ngFor="let video of videoByDepts">
+          <div class="card text-center">
+            <div class="card-body">
+              <blockquote class="card-bodyquote">
+                <p>{{video.character}}</p>
+                <footer>
+                  <strong>1hr</strong>
+                </footer>
+              </blockquote>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-2">
+    </div>
+  </div>  
+</div>
+
+<ngx-spinner type="ball-clip-rotate"></ngx-spinner>
+
+<ng-template #templateModal class="modal-lg">
+  <div class="modal-header bg-primary">
+    <button type="button" class="close pull-right" aria-label="Close" (click)="closeModal(videoModal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <video #videoModal controls width="100%" height="100%">
+      <source [src]="video.path" type="video/mp4">
+    </video>
+  </div>
+</ng-template>
+
+
+
